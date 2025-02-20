@@ -615,8 +615,8 @@ const CommunityCalendar = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-4 md:p-6 bg-white rounded-xl shadow-lg">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+        <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2 mb-4 md:mb-0">
           <Calendar className="text-gray-700" size={24} />
           <span>Celebrações da 7 Comunidade</span>
         </h1>
