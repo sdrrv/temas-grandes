@@ -30,19 +30,19 @@ const CommunityCalendar = () => {
 
   // Community schedule data
   const scheduleData = {
-    "Group 1": [
+    "Group 3": [
       { status: "preparing", begin: "03-02-2025", ending: "31-03-2025" },
       { status: "celebrating", begin: "01-04-2025", ending: "30-04-2025" },
     ],
-    "Group 2": [
+    "Group 4": [
       { status: "preparing", begin: "01-03-2025", ending: "30-04-2025" },
       { status: "celebrating", begin: "01-05-2025", ending: "31-05-2025" },
     ],
-    "Group 3": [
+    "Group 1": [
       { status: "preparing", begin: "01-04-2025", ending: "31-05-2025" },
       { status: "celebrating", begin: "01-06-2025", ending: "30-06-2025" },
     ],
-    "Group 4": [
+    "Group 2": [
       { status: "preparing", begin: "01-05-2025", ending: "30-06-2025" },
       { status: "celebrating", begin: "01-07-2025", ending: "30-07-2025" },
     ],
