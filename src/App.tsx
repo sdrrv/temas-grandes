@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Calendar,
   ChevronLeft,
@@ -42,7 +42,7 @@ const CommunityCalendar = () => {
   };
 
   // Get status icon based on status
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status: string) => {
     switch (status) {
       case "celebrating":
         return <Star size={16} className="text-yellow-500" />;
@@ -55,20 +55,13 @@ const CommunityCalendar = () => {
   };
 
   // Helper to parse date string (DD-MM-YYYY) into Date object
-  const parseScheduleDate = (dateStr) => {
+  const parseScheduleDate = (dateStr: string) => {
     const [day, month, year] = dateStr.split("-").map(Number);
     return new Date(year, month - 1, day);
   };
 
-  // Helper to format Date as DD-MM-YYYY
-  const formatAsDateMonthYear = (date) => {
-    return `${String(date.getDate()).padStart(2, "0")}-${String(
-      date.getMonth() + 1
-    ).padStart(2, "0")}-${date.getFullYear()}`;
-  };
-
   // Get group status for a specific date
-  const getGroupStatus = (group, date) => {
+  const getGroupStatus = (group: keyof typeof scheduleData, date: Date) => {
     const groupSchedule = scheduleData[group] || [];
 
     for (const period of groupSchedule) {
@@ -87,16 +80,19 @@ const CommunityCalendar = () => {
   };
 
   // Get all groups that are celebrating on a specific date
-  const getCelebratingGroups = (date) => {
+  const getCelebratingGroups = (date: Date) => {
     return Object.keys(scheduleData).filter(
-      (group) => getGroupStatus(group, date) === "celebrating"
+      (group) =>
+        getGroupStatus(group as keyof typeof scheduleData, date) ===
+        "celebrating"
     );
   };
 
   // Get all groups that are preparing on a specific date
-  const getPreparingGroups = (date) => {
+  const getPreparingGroups = (date: Date) => {
     return Object.keys(scheduleData).filter(
-      (group) => getGroupStatus(group, date) === "preparing"
+      (group) =>
+        getGroupStatus(group as keyof typeof scheduleData, date) === "preparing"
     );
   };
 
@@ -104,14 +100,15 @@ const CommunityCalendar = () => {
   const weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
   // Get days in month
-  const getDaysInMonth = (year, month) =>
+  const getDaysInMonth = (year: number, month: number) =>
     new Date(year, month + 1, 0).getDate();
 
   // Get first day of month (0 = Sunday, 1 = Monday, etc.)
-  const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
+  const getFirstDayOfMonth = (year: number, month: number) =>
+    new Date(year, month, 1).getDay();
 
   // Format date as YYYY-MM-DD
-  const formatDate = (date) => {
+  const formatDate = (date: Date) => {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
       2,
       "0"
@@ -119,7 +116,7 @@ const CommunityCalendar = () => {
   };
 
   // Check if two dates are the same day
-  const isSameDay = (date1, date2) => {
+  const isSameDay = (date1: Date, date2: Date) => {
     return formatDate(date1) === formatDate(date2);
   };
 
@@ -145,13 +142,13 @@ const CommunityCalendar = () => {
   };
 
   // Get month name
-  const getMonthName = (date) => {
+  const getMonthName = (date: Date) => {
     const monthName = date.toLocaleString("pt-PT", { month: "long" });
     return monthName.charAt(0).toUpperCase() + monthName.slice(1);
   };
 
   // Get abbreviated month name
-  const getShortMonthName = (monthIndex) => {
+  const getShortMonthName = (monthIndex: number) => {
     const date = new Date();
     date.setMonth(monthIndex);
     return date.toLocaleString("default", { month: "short" });
@@ -163,7 +160,7 @@ const CommunityCalendar = () => {
   };
 
   // View specific month from year view
-  const viewSpecificMonth = (monthIndex) => {
+  const viewSpecificMonth = (monthIndex: number) => {
     const newDate = new Date(viewDate);
     newDate.setMonth(monthIndex);
     setViewDate(newDate);
@@ -171,7 +168,7 @@ const CommunityCalendar = () => {
   };
 
   // Translate status to Portuguese
-  const translateStatus = (status) => {
+  const translateStatus = (status: string) => {
     switch (status) {
       case "celebrating":
         return "a celebrar";
@@ -194,7 +191,7 @@ const CommunityCalendar = () => {
         ? getDaysInMonth(year - 1, 11)
         : getDaysInMonth(year, month - 1);
 
-    let days = [];
+    const days = [];
 
     // Add days from previous month
     for (let i = firstDayOfMonth - 1; i >= 0; i--) {
@@ -270,15 +267,29 @@ const CommunityCalendar = () => {
   };
 
   // Calculate activity spans for a week
-  const calculateWeekActivitySpans = (week) => {
-    const year = viewDate.getFullYear();
-    const month = viewDate.getMonth();
-    const celebratingSpans = {};
-    const preparingSpans = {};
+  const calculateWeekActivitySpans = (
+    week: { date: Date; isCurrentMonth: boolean }[]
+  ) => {
+    const celebratingSpans: {
+      [key: string]: {
+        startIdx: number;
+        endIdx: number;
+        startDate: Date;
+        endDate: Date;
+      }[];
+    } = {};
+    const preparingSpans: {
+      [key: string]: {
+        startIdx: number;
+        endIdx: number;
+        startDate: Date;
+        endDate: Date;
+      }[];
+    } = {};
 
     // For each group, determine the spans within this week
     Object.keys(scheduleData).forEach((group) => {
-      const activities = scheduleData[group] || [];
+      const activities = scheduleData[group as keyof typeof scheduleData] || [];
 
       activities.forEach((activity) => {
         const beginDate = parseScheduleDate(activity.begin);
@@ -423,9 +434,13 @@ const CommunityCalendar = () => {
                       >
                         <div
                           className={`rounded-md p-1 text-xs truncate ${
-                            groupColors[group].split(" ")[0]
+                            groupColors[
+                              group as keyof typeof groupColors
+                            ].split(" ")[0]
                           } border ${
-                            groupColors[group].split(" ")[2]
+                            groupColors[
+                              group as keyof typeof groupColors
+                            ].split(" ")[2]
                           } shadow-sm`}
                         >
                           <div className="truncate flex items-center gap-1">
@@ -457,9 +472,13 @@ const CommunityCalendar = () => {
                       >
                         <div
                           className={`rounded-md p-1 text-xs truncate ${
-                            groupColors[group].split(" ")[0]
+                            groupColors[
+                              group as keyof typeof groupColors
+                            ].split(" ")[0]
                           } border ${
-                            groupColors[group].split(" ")[2]
+                            groupColors[
+                              group as keyof typeof groupColors
+                            ].split(" ")[2]
                           } shadow-sm`}
                         >
                           <div className="truncate flex items-center gap-1">
@@ -525,12 +544,18 @@ const CommunityCalendar = () => {
                         <div
                           key={`${month.index}-${group}`}
                           className={`rounded-lg p-3 mb-2 cursor-pointer ${
-                            groupColors[group].split(" ")[0]
-                          } border ${groupColors[group].split(" ")[2]}`}
+                            groupColors[
+                              group as keyof typeof groupColors
+                            ].split(" ")[0]
+                          } border ${
+                            groupColors[
+                              group as keyof typeof groupColors
+                            ].split(" ")[2]
+                          }`}
                         >
                           <div className="text-sm font-medium truncate flex items-center gap-1">
                             <Star size={14} />
-                            {group}
+                            {group as string}
                           </div>
                           <div className="text-xs opacity-75">A celebrar</div>
                         </div>
@@ -550,12 +575,18 @@ const CommunityCalendar = () => {
                         <div
                           key={`${month.index}-prep-${group}`}
                           className={`rounded-lg p-3 cursor-pointer ${
-                            groupColors[group].split(" ")[0]
-                          } border ${groupColors[group].split(" ")[2]}`}
+                            groupColors[
+                              group as keyof typeof groupColors
+                            ].split(" ")[0]
+                          } border ${
+                            groupColors[
+                              group as keyof typeof groupColors
+                            ].split(" ")[2]
+                          }`}
                         >
                           <div className="text-sm font-medium truncate flex items-center gap-1">
                             <BookOpen size={14} />
-                            {group}
+                            {group as string}
                           </div>
                           <div className="text-xs opacity-75">A preparar</div>
                         </div>
@@ -643,7 +674,10 @@ const CommunityCalendar = () => {
         <h2 className="text-lg font-semibold mb-3">Estado dos Grupos</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {Object.keys(groupColors).map((group) => {
-            const status = getGroupStatus(group, viewDate);
+            const status = getGroupStatus(
+              group as keyof typeof scheduleData,
+              viewDate
+            );
 
             return (
               <div
