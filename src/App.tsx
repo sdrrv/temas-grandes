@@ -37,7 +37,9 @@ const CommunityCalendar = () => {
     "Group 2": [
       { status: "celebrating", begin: "01-01-2025", ending: "20-02-2025" },
     ],
-    "Group 3": [],
+    "Group 3": [
+      { status: "preparing", begin: "15-02-2025", ending: "31-03-2025" },
+    ],
     "Group 4": [],
   };
 
@@ -284,8 +286,17 @@ const CommunityCalendar = () => {
         endIdx: number;
         startDate: Date;
         endDate: Date;
+        position: number; // Add position property
       }[];
     } = {};
+
+    // Track occupied positions for preparing spans
+    const occupiedPositions: {
+      start: number;
+      end: number;
+      position: number;
+    }[] = [];
+    let maxPosition = 0;
 
     // For each group, determine the spans within this week
     Object.keys(scheduleData).forEach((group) => {
@@ -343,11 +354,37 @@ const CommunityCalendar = () => {
             });
           } else if (activity.status === "preparing") {
             if (!preparingSpans[group]) preparingSpans[group] = [];
+
+            // Find a suitable position for the new span
+            let position = 0;
+            let found = false;
+
+            while (!found) {
+              found = true;
+              // Check if this position is already occupied
+              for (const occupied of occupiedPositions) {
+                if (
+                  position === occupied.position &&
+                  ((startIdx >= occupied.start && startIdx <= occupied.end) ||
+                    (endIdx >= occupied.start && endIdx <= occupied.end) ||
+                    (startIdx <= occupied.start && endIdx >= occupied.end))
+                ) {
+                  found = false;
+                  position++;
+                  break;
+                }
+              }
+            }
+
+            maxPosition = Math.max(maxPosition, position);
+            occupiedPositions.push({ start: startIdx, end: endIdx, position });
+
             preparingSpans[group].push({
               startIdx,
               endIdx,
               startDate: week[startIdx].date,
               endDate: week[endIdx].date,
+              position,
             });
           }
         }
@@ -392,7 +429,7 @@ const CommunityCalendar = () => {
                   return (
                     <div
                       key={dayIndex}
-                      className={`h-28 p-1 border-t border-l border-gray-200 relative ${
+                      className={`h-32 p-1 border-t border-l border-gray-200 relative ${
                         dayIndex === 6 ? "border-r" : ""
                       } ${weekIndex === 5 ? "border-b" : ""} ${
                         !day.isCurrentMonth ? "bg-gray-50" : ""
@@ -459,14 +496,16 @@ const CommunityCalendar = () => {
                     const spanWidth =
                       ((span.endIdx - span.startIdx + 1) * 100) / 7;
                     const leftOffset = (span.startIdx * 100) / 7;
+                    const bottomOffset = 2 + span.position * 30; // Adjust vertical position
 
                     return (
                       <div
                         key={`preparing-${group}-${spanIndex}-${weekIndex}`}
-                        className={`absolute left-0 bottom-2 px-2 z-10 duration-300 transition-all`}
+                        className={`absolute left-0 px-2 z-10 duration-300 transition-all`}
                         style={{
                           width: `${spanWidth}%`,
                           left: `${leftOffset}%`,
+                          bottom: `${bottomOffset}px`,
                           opacity: "0.95",
                         }}
                       >
