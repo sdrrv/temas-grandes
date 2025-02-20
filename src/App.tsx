@@ -31,16 +31,21 @@ const CommunityCalendar = () => {
   // Community schedule data
   const scheduleData = {
     "Group 1": [
-      { status: "preparing", begin: "01-02-2025", ending: "31-03-2025" },
-      { status: "celebrating", begin: "01-04-2025", ending: "30-06-2025" },
+      { status: "preparing", begin: "03-02-2025", ending: "31-03-2025" },
+      { status: "celebrating", begin: "01-04-2025", ending: "30-04-2025" },
     ],
     "Group 2": [
-      { status: "celebrating", begin: "01-01-2025", ending: "20-02-2025" },
+      { status: "preparing", begin: "01-03-2025", ending: "30-04-2025" },
+      { status: "celebrating", begin: "01-05-2025", ending: "31-05-2025" },
     ],
     "Group 3": [
-      { status: "preparing", begin: "15-02-2025", ending: "31-03-2025" },
+      { status: "preparing", begin: "01-04-2025", ending: "31-05-2025" },
+      { status: "celebrating", begin: "01-06-2025", ending: "30-06-2025" },
     ],
-    "Group 4": [],
+    "Group 4": [
+      { status: "preparing", begin: "01-05-2025", ending: "30-06-2025" },
+      { status: "celebrating", begin: "01-07-2025", ending: "30-07-2025" },
+    ],
   };
 
   // Get status icon based on status
@@ -429,7 +434,7 @@ const CommunityCalendar = () => {
                   return (
                     <div
                       key={dayIndex}
-                      className={`h-32 p-1 border-t border-l border-gray-200 relative ${
+                      className={`h-36 p-1 border-t border-l border-gray-200 relative ${
                         dayIndex === 6 ? "border-r" : ""
                       } ${weekIndex === 5 ? "border-b" : ""} ${
                         !day.isCurrentMonth ? "bg-gray-50" : ""
@@ -496,7 +501,7 @@ const CommunityCalendar = () => {
                     const spanWidth =
                       ((span.endIdx - span.startIdx + 1) * 100) / 7;
                     const leftOffset = (span.startIdx * 100) / 7;
-                    const bottomOffset = 2 + span.position * 30; // Adjust vertical position
+                    const bottomOffset = 8 + span.position * 35; // Adjust vertical position
 
                     return (
                       <div
