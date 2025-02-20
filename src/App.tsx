@@ -171,9 +171,9 @@ const CommunityCalendar = () => {
   const translateStatus = (status: string) => {
     switch (status) {
       case "celebrating":
-        return "a celebrar";
+        return "celebrar";
       case "preparing":
-        return "a preparar";
+        return "preparar";
       case "idle":
       default:
         return "inativo";
@@ -516,15 +516,15 @@ const CommunityCalendar = () => {
         {quarters.map((quarterMonths, quarterIndex) => (
           <div
             key={quarterIndex}
-            className="border rounded-lg overflow-hidden shadow-sm"
+            className="border rounded-lg overflow-hidden shadow-sm border-gray-300"
           >
-            <div className="bg-gray-50 p-3 border-b">
+            <div className="bg-gray-50 p-3 border-b border-gray-300">
               <h3 className="font-semibold">
                 T{quarterIndex + 1} {year}
               </h3>
             </div>
 
-            <div className="grid grid-cols-3 divide-x">
+            <div className="grid grid-cols-3 divide-x divide-gray-300">
               {quarterMonths.map((month) => {
                 return (
                   <div
@@ -561,7 +561,7 @@ const CommunityCalendar = () => {
                         </div>
                       ))
                     ) : (
-                      <div className="rounded-lg p-3 mb-2 bg-gray-50 border border-gray-200 cursor-pointer">
+                      <div className="rounded-lg p-3 mb-2 bg-gray-50 border border-gray-300 cursor-pointer">
                         <div className="text-sm font-medium truncate flex items-center gap-1">
                           <Circle size={14} className="text-gray-400" />
                           Sem celebrações
@@ -592,7 +592,7 @@ const CommunityCalendar = () => {
                         </div>
                       ))
                     ) : (
-                      <div className="rounded-lg p-3 bg-gray-50 border border-gray-200 cursor-pointer">
+                      <div className="rounded-lg p-3 bg-gray-50 border border-gray-300 cursor-pointer">
                         <div className="text-sm font-medium truncate flex items-center gap-1">
                           <Circle size={14} className="text-gray-400" />
                           Sem preparações
@@ -618,7 +618,7 @@ const CommunityCalendar = () => {
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
         <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2 mb-4 md:mb-0">
           <Calendar className="text-gray-700" size={24} />
-          <span>Celebrações da 7 Comunidade</span>
+          <span>Celebrações da 7ªComunidade</span>
         </h1>
 
         <div className="flex items-center gap-2">
@@ -670,7 +670,7 @@ const CommunityCalendar = () => {
       {viewMode === "month" ? renderMonthView() : renderYearView()}
 
       {/* Group Status - Minimalist Version */}
-      <div className="mt-6 border-t pt-4">
+      <div className="mt-6 border-t pt-4 border-gray-300">
         <h2 className="text-lg font-semibold mb-3">Estado dos Grupos</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {Object.keys(groupColors).map((group) => {
@@ -682,10 +682,10 @@ const CommunityCalendar = () => {
             return (
               <div
                 key={group}
-                className="flex items-center justify-between p-3 rounded-lg border"
+                className="flex flex-col items-start justify-between p-3 rounded-lg border border-gray-300 md:flex-row md:items-center"
               >
-                <span className="font-medium">{group}</span>
-                <div className="flex items-center gap-2">
+                <span className="font-medium mr-5">{group}</span>
+                <div className="flex items-center gap-2 mt-2 md:mt-0">
                   {getStatusIcon(status)}
                   <span className="text-xs uppercase">
                     {translateStatus(status)}
@@ -700,4 +700,19 @@ const CommunityCalendar = () => {
   );
 };
 
-export default CommunityCalendar;
+// Add footer
+const Footer = () => (
+  <div className="mt-6 mb-3 text-center text-gray-500 text-sm">
+    Made by elvas with ❤️
+  </div>
+);
+
+// Render the footer
+const App = () => (
+  <div className="flex flex-col min-h-screen">
+    <CommunityCalendar />
+    <Footer />
+  </div>
+);
+
+export default App;
